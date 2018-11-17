@@ -9,3 +9,5 @@ faster (having more than 20 digitalWrite calls for writing one byte is not
 very efficient).
 
 ![Schematics](schematics_bb.png)
+
+![Montage](montage.jpg)
