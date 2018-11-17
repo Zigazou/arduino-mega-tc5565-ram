@@ -7,3 +7,5 @@ TC5565A*L 8192 bytes CMOS RAM chip.
 It uses the PORT* notation in order to make the program more concise and
 faster (having more than 20 digitalWrite calls for writing one byte is not
 very efficient).
+
+![Schematics](schematics_bb.png)
