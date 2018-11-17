@@ -64,6 +64,8 @@ void setup() {
   /* Show information on the serial monitor. */
   Serial.println("Controlling Toshiba TC5565A*L 8192 bytes CMOS RAM.");
   Serial.println("Each dot means a complete test set has been passed.");
+
+  memory_bandwidth();
 }
 
 /* Put a value in RAM at the specified address */
@@ -104,6 +106,9 @@ unsigned char peek(unsigned int address) {
 
   /* Give some time to the RAM chip */
   delayMicroseconds(2);
+  /* These 2 read are finer delay than delayMicroseconds(); */
+  /* value = PINA; */
+  /* value = PINA; */
 
   /* Read the value */
   value = PINA;
@@ -212,6 +217,7 @@ void test_memory() {
     Serial.println("");
     Serial.print("Data bus test, error with value 0x");
     Serial.println(result, HEX);
+    delay(5000);
     return;
   }
 
@@ -220,6 +226,7 @@ void test_memory() {
     Serial.println("");
     Serial.print("Address bus test, error at address 0x");
     Serial.println(result, HEX);
+    delay(5000);
     return;
   }
 
@@ -228,10 +235,47 @@ void test_memory() {
     Serial.println("");
     Serial.print("Device test, error at address 0x");
     Serial.println(result, HEX);
+    delay(5000);
     return;
   }
 
   Serial.print(".");
+}
+
+/* Evaluate memory bandwidth */
+#define TEST_SAMPLES 1000000
+void memory_bandwidth() {
+  double time_start;
+  double time_stop;
+  double bandwidth;
+
+  unsigned long i;
+
+  /* Write bandwidth */
+  Serial.print("Write speed: ");
+
+  time_start = micros();
+  for(i = 0; i < TEST_SAMPLES; i++) poke(i, i);
+  time_stop = micros();
+
+  bandwidth = TEST_SAMPLES / ((time_stop - time_start) / 1000000);
+  Serial.print((time_stop - time_start) / TEST_SAMPLES);
+  Serial.print(" µs / ");
+  Serial.print(bandwidth);
+  Serial.println(" bytes/second");
+
+  /* Read bandwidth */
+  Serial.print("Read speed: ");
+
+  time_start = micros();
+  for(i = 0; i < TEST_SAMPLES; i++) peek(i);
+  time_stop = micros();
+
+  bandwidth = TEST_SAMPLES / ((time_stop - time_start) / 1000000);
+  Serial.print((time_stop - time_start) / TEST_SAMPLES);
+  Serial.print(" µs / ");
+  Serial.print(bandwidth);
+  Serial.println(" bytes/second");
 }
 
 unsigned int count = 0;
